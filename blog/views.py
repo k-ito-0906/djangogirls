@@ -42,3 +42,8 @@ def post_edit(request, pk):
         # 既存の記事の内容が入った状態でフォームを表示する
         form = PostForm(instance=post)
     return render(request, 'blog/post_edit.html', {'form': form})
+
+def post_remove(request, pk):
+    post = get_object_or_404(Post, pk = pk)
+    post.delete()
+    return redirect('post_list')

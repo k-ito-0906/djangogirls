@@ -44,3 +44,13 @@ h1, h2, h3, h4 {
 .post h2 a, .post h2 a:visited {
     color: #000000;
 }
+
+body, p, .post{
+    font-family:"Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    line-height:1.8;
+    color:#333;
+}
+
+.page-header h1, h2{
+    font-family:'Lobster', cursive;
+}
