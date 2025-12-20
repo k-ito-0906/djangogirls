@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-zu3&_c&5utdk^8*w@^(34m0ks)meop@i)iewh$^*hn_11&ou0p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
 
 
 # Application definition
@@ -117,3 +117,5 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 LOGIN_REDIRECT_URL = '/'
+import os
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
