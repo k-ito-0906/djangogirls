@@ -1,13 +1,18 @@
-from django.shortcuts import render, get_object_or_404, redirect # redirectを追加
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post
-from .forms import PostForm # これを追加
+from .forms import PostForm
 from django.utils import timezone
 
-# ...他のビューはそのまま...
+def post_list(request):
+    posts = Post.objects.all() 
+    return render(request, 'blog/post_list.html', {'posts': posts})
+
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    return render(request, 'blog/post_detail.html', {'post': post})
 
 def post_new(request):
     if request.method == "POST":
-        # 保存ボタンが押されたとき
         form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
@@ -16,6 +21,5 @@ def post_new(request):
             post.save()
             return redirect('post_detail', pk=post.pk)
     else:
-        # 最初に見る時（空のフォームを表示）
         form = PostForm()
     return render(request, 'blog/post_edit.html', {'form': form})
