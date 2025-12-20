@@ -23,3 +23,19 @@ def post_new(request):
     else:
         form = PostForm()
     return render(request, 'blog/post_edit.html', {'form': form})
+
+def post_edit(request, pk):
+    post = get_object_or_404(Post, pk=pk) # 既存の記事を特定する
+    if request.method == "POST":
+        # 既存の記事(instance=post)を上書きする
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.published_date = timezone.now()
+            post.save()
+            return redirect('post_detail', pk=post.pk)
+    else:
+        # 既存の記事の内容が入った状態でフォームを表示する
+        form = PostForm(instance=post)
+    return render(request, 'blog/post_edit.html', {'form': form})
