@@ -29,10 +29,12 @@ Djangoフレームワークを使用した、セキュリティとUXを考慮し
 - **タイポグラフィの改善**: 日本語の読みやすさを重視し、CSSでフォントファミリーと行間を最適化しました。
 
 ## 🛠 使用技術
-- **Backend**: Python 3.13 / Django 6.0
-- **Frontend**: HTML5, CSS3, Bootstrap 5
-- **Database**: SQLite3
-- **Infrastructure**: PythonAnywhere (Production), GitHub (CI/CD Workflow)
+    - Backend: Python 3.11 / Django 4.2 (LTS)
+    - Frontend: HTML5, CSS3, Bootstrap 5
+    - Database: SQLite3（学習用）
+    - Infrastructure: PythonAnywhere
+    - Version Control: Git / GitHub
+
 
 ## 📈 開発プロセス
 プロフェッショナルな開発現場を想定したワークフローを採用しています。
