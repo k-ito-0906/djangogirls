@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'blog.middleware.ratelimit_middleware.TokenBucketMiddleware', 
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -119,3 +120,10 @@ STATIC_URL = 'static/'
 LOGIN_REDIRECT_URL = '/'
 import os
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+CACHES = {
+    'default':{
+        'BACKEND':'django.core.cache.backends.locmem.LocMemCache', 
+        'LOCATION':'unique-snowflake', 
+    }
+}
