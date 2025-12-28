@@ -3,13 +3,14 @@
 本プロジェクトは、Djangoフレームワークを用いたブログアプリケーションに、ミドルウェア層でのトラフィック制御とセッションベースのアクセス管理を統合したプロトタイプです。
 
 ## 概要
-標準的なブログ機能に加え、サーバーリソースの保護と認証状態に応じたユーザー誘導の仕組みを、フレームワークのミドルウェア（Middleware）層で実装しています。
+標準的なブログ機能に加え、サーバーリソースの保護と認証状態に応じたユーザー誘導の仕組みを、フレームワークのミドルウェア層で実装しています。学習目的として、Djangoのリクエスト処理フローとMiddlewareの責務を理解することを主眼に設計しています。
+
 
 ## 技術スタック
-- **Framework**: Django 6.0
+- **Framework**: Django
 - **Database**: SQLite3
 - **Caching**: LocMemCache (Django Local-memory caching)
-- **Language**: Python 3.13
+- **Language**: Python3
 
 ## 実装済みの主要機能
 
@@ -18,6 +19,9 @@
 - **バースト許容**: 瞬間的なアクセス集中を `capacity` パラメータ（10.0）で許容します。
 - **補充モデル**: 前回アクセスからの経過時間（`delta_time`）に基づき、定義された `rate`（1.0/s）に従ってトークンを動的に補充します。
 - **状態管理**: 判定用データは Django Cache（`LocMemCache`）に格納し、10分間の有効期限（TTL）を設定してメモリを管理します。
+※ 本実装は単一プロセス環境を前提とした簡易実装であり、
+分散環境での運用には外部ストア等が必要と認識しています。
+
 
 ### 2. セッションベースの動的アクセス制御
 `blog/middleware/ratelimit_middleware.py` において、リクエストのライフサイクルに応じたパス制御を実施しています。
@@ -40,5 +44,5 @@ python manage.py migrate
 python manage.py runserver
 ```
 ##  公開URL
-[http://kokiito0906.pythonanywhere.com]
+http://kokiito0906.pythonanywhere.com/
 ※記事の追加・編集・削除にはログインが必要です。
