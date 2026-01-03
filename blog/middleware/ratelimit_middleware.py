@@ -26,7 +26,7 @@ class TokenBucketMiddleware:
         #メインページへのアクセスのみを制限
         if path == '/':
             user_ip = request.META.get('REMOTE_ADDR')
-            limiter = TokenBucketLimiter(user_ip, capacity = 10.0, rate = 1.0)
+            limiter = TokenBucketLimiter(user_ip, capacity = 3.0, rate = 0.2)
 
             if not limiter.is_allowed():
                 message =  "アクセスを制限しています。数秒待ってください。"
