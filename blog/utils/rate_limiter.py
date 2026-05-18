@@ -7,7 +7,7 @@ class TokenBucketLimiter:
         self.capacity = capacity
         self.rate = rate
 
-    def is_allowed(self):
+    def is_allowed(self, cost=1.0):
         now = time.time()
         state = cache.get(self.key, {
             "tokens":self.capacity, 
@@ -15,12 +15,12 @@ class TokenBucketLimiter:
         })
 
         #補充計算
-        delta_time = now - state["last_updated"]#前回アクセスからの経過時間
+        delta_time = now - state["last_updated"]
         new_tokens = min(self.capacity, state["tokens"] + delta_time * self.rate)
 
         #判定
-        if new_tokens >= 1.0:
-            new_tokens -=1.0
+        if new_tokens >= cost:
+            new_tokens -= cost
             allowed = True
         else:
             allowed = False
@@ -29,6 +29,6 @@ class TokenBucketLimiter:
         cache.set(self.key, {
             "tokens":new_tokens, 
             "last_updated":now
-        }, timeout = 600) #10分間アクセスがなければ破棄
+        }, timeout = 600)
 
         return allowed
