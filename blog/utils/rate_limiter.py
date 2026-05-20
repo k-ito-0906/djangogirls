@@ -6,6 +6,7 @@ class TokenBucketLimiter:
         self.key = f"ratelimit_{key}"
         self.capacity = capacity
         self.rate = rate
+        self.current_tokens = capacity # 初期値を設定
 
     def is_allowed(self, cost=1.0):
         now = time.time()
@@ -14,18 +15,21 @@ class TokenBucketLimiter:
             "last_updated":now
         })
 
-        #補充計算
+        # 補充計算
         delta_time = now - state["last_updated"]
         new_tokens = min(self.capacity, state["tokens"] + delta_time * self.rate)
 
-        #判定
+        # 判定
         if new_tokens >= cost:
             new_tokens -= cost
             allowed = True
         else:
             allowed = False
 
-        #状態を保存
+        # 最新のトークン数を保持
+        self.current_tokens = new_tokens
+
+        # 状態を保存
         cache.set(self.key, {
             "tokens":new_tokens, 
             "last_updated":now
