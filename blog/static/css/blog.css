@@ -1,7 +1,14 @@
 .page-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    width: 100%;
     background-color: black;
     margin-top: 0;
-    padding: 20px 20px 20px 40px;
+    padding: 20px 20px 5px 40px;
+    box-sizing: border-box;
 }
 
 .page-header h1, .page-header h1 a, .page-header h1 a:visited, .page-header h1 a:active {
@@ -49,6 +56,10 @@ body, p, .post{
     font-family:"Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
     line-height:1.8;
     color:#333;
+}
+
+main.container {
+    margin-top: 110px;
 }
 
 .page-header h1, h2{
