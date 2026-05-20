@@ -12,8 +12,38 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 
+# .env ファイルがあれば読み込んで環境変数に反映する
+# 優先して python-dotenv を使い、なければ簡易パーサで代替します。
+try:
+    from dotenv import load_dotenv
+    DOTENV_AVAILABLE = True
+except Exception:
+    DOTENV_AVAILABLE = False
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# プロジェクトルートと app フォルダ内の .env を順に読み込む
+possible_envs = [BASE_DIR / '.env', BASE_DIR / 'blog' / '.env']
+for env_path in possible_envs:
+    try:
+        if env_path.exists():
+            if DOTENV_AVAILABLE:
+                load_dotenv(dotenv_path=env_path)
+            else:
+                # 簡易ロード: KEY=VALUE 形式をパースして os.environ にセット
+                with open(env_path, encoding='utf-8') as f:
+                    for raw in f:
+                        line = raw.strip()
+                        if not line or line.startswith('#'):
+                            continue
+                        if '=' in line:
+                            k, v = line.split('=', 1)
+                            v = v.strip().strip('\"\'')
+                            os.environ.setdefault(k.strip(), v)
+    except Exception:
+        # 読み込み失敗は致命的ではない（環境変数からの読み取りを優先）
+        pass
 
 
 # Quick-start development settings - unsuitable for production
