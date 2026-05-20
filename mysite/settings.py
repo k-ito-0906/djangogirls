@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,10 +20,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-zu3&_c&5utdk^8*w@^(34m0ks)meop@i)iewh$^*hn_11&ou0p'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True # 本番環境では False にする
 
 ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
 
@@ -128,3 +128,8 @@ CACHES = {
         'LOCATION':'unique-snowflake', 
     }
 }
+
+# Rate limiter defaults used by blog.middleware.ratelimit_middleware.TokenBucketMiddleware
+# 調整が必要な場合は本番環境の環境変数やデプロイ設定で上書きする
+RATE_LIMIT_CAPACITY = 5.0  # バースト許容量
+RATE_LIMIT_RATE = 0.5     # 秒あたりの回復レート

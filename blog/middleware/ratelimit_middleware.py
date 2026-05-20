@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from blog.utils.rate_limiter import TokenBucketLimiter
 from django.shortcuts import redirect
 from django.urls import resolve
+from django.conf import settings
 
 class TokenBucketMiddleware:
     def __init__(self, get_response):
@@ -46,18 +47,22 @@ class TokenBucketMiddleware:
                 cost = 3.0 # 記事の作成や編集などは3コスト
 
         # IPアドレスの正確な取得
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        # PythonAnywhere のようなリバースプロキシ下では REMOTE_ADDR はプロキシの内部IPになるため、
+        # X-Forwarded-For ヘッダーの先頭をクライアントIPとして使う
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR', '')
         if x_forwarded_for:
-            user_ip = x_forwarded_for.split(',')[0].strip()
+            user_ip = x_forwarded_for.split(',')[0].strip() or request.META.get('REMOTE_ADDR')
         else:
             user_ip = request.META.get('REMOTE_ADDR')
 
-        # サイト全体に制限を広げるため，初期設定より少し容量を増やして調整します
-        limiter = TokenBucketLimiter(user_ip, capacity=5.0, rate=0.5)
+        # サイト全体に制限を広げるため，設定ファイルの定数を参照して調整
+        capacity = getattr(settings, 'RATE_LIMIT_CAPACITY', 5.0)
+        rate = getattr(settings, 'RATE_LIMIT_RATE', 0.5)
+        limiter = TokenBucketLimiter(user_ip, capacity=capacity, rate=rate)
         is_allowed = limiter.is_allowed(cost=cost)
 
         # テンプレートに渡すための耐久値ステータスをリクエストに格納
-        # 小数点以下を丸めて見やすくします
+        # 小数点以下を丸める
         request.defense_status = {
             'tokens': round(limiter.current_tokens, 1),
             'capacity': limiter.capacity
